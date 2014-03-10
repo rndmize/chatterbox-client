@@ -82,3 +82,17 @@ form input[type=text] {
 .spinner img {
     padding: 10px;
 }
+
+div.message {
+    padding: 10px;
+    text-align: left;
+}
+
+span.username {
+    color: #999;
+}
+
+span.content {
+    color: #000;
+    margin-left: 10px;
+}
