@@ -1,6 +1,11 @@
+html {
+    overflow: hidden;
+}
+
 body {
     background: #eee;
     text-align: center;
+    margin: 0;
     padding: 0 25px;
     font-family: arial, sans-serif;
 }
@@ -11,16 +16,17 @@ body {
     margin: auto;
     text-align: left;
     background: white;
-    padding: 50px 60px;
+    padding: 30px 60px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
 }
 
 #main h1 {
-    margin-top: 0;
+    margin-top: 10;
     font-size: 35px;
-    margin-bottom: 5px;
-    padding: 5px;
+    margin-bottom: 20px;
+    padding: 0px;
+    font-family: 'Audiowide';
 }
 
 #main h1 span {
@@ -47,19 +53,6 @@ body {
     line-height: 13px;
 }
 
-form {
-    padding: 20px;
-    padding-left: 0;
-    margin-bottom: 20px;
-}
-
-form input[type=text] {
-    margin-right: 10px;
-    width: 70%;
-    font-size: 12px;
-    padding: 5px;
-}
-
 .chat {
     padding: 5px;
     margin-bottom: 5px;
@@ -84,6 +77,10 @@ form input[type=text] {
     padding: 10px;
 }
 
+h1 {
+
+}
+
 #container {
     height: 600px;
     overflow-y: scroll;
@@ -91,7 +88,7 @@ form input[type=text] {
 
 div.message {
     width: 460px;
-    padding: 10px;
+    padding: 2px;
     text-align: left;
 }
 
@@ -100,13 +97,13 @@ div.message {
 
 span.username {
     color: #999;
-    font-size: .8em;
+    font-size: .9em;
 }
 
 span.content {
     color: #000;
     margin-left: 10px;
-    font-size: .8em;
+    font-size: .9em;
 }
 
 span.date {
@@ -116,19 +113,20 @@ span.date {
 
 #tools {
     background: top center url(separator.png) no-repeat;
-    margin: 10px;
-    padding: 10px;
+    margin: 10px 0;
+    padding: 20px 0;
 }
 
-.wordbox {
-    width: 80%;
-    height: 10%;
-}
+
 
 input.wordbox {
-    height: 20px;
+    height: 24px;
+    width: 80%;
+    font-size: .9em;
 }
 
 button {
-    height: 26px;
+    height: 30px;
+    width: 80px;
+    font-size: 1em;
 }

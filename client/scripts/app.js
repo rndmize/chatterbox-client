@@ -71,8 +71,14 @@ var createMessage = function() {
     'roomname': window.currentRoom
   };
   $('.wordbox').val('');
-  $.ajax(makePost(message));
-  console.log(message);
+  // console.log(message);
+
+  if (message.text[0] === '/') {
+    parseCommand(message);
+  }
+  else {
+    $.ajax(makePost(message));
+  }
 };
 
 // Click and enter event handlers
