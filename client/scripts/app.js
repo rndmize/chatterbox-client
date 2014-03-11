@@ -1,10 +1,4 @@
 
-// List of users object
-var people = {};
-
-var me = document.URL.slice(document.URL.indexOf("=") + 1);
-people[me] = {};
-people[me].group = "me";
 
 // Creates DOM elements and displays message
 var display = function(obj) {
@@ -16,21 +10,39 @@ var display = function(obj) {
   $('.message:last').append('<span class="content"></span>');
   $('.content:last').text(obj.text);
   $('.message:last')[0].setAttribute("room", obj.roomname);
- // $('.username:last')[0].setAttribute("group", groupCheck(obj.username));
+  $('.username:last')[0].setAttribute("group", groupCheck(obj.username));
+};
+
+var roomCheckAndDisplay = function(obj) {
+  if (window.currentRoom !== 'all') {
+    if (obj.roomname === window.currentRoom) {
+      display(obj);
+      $('#container')[0].scrollTop = $('#container')[0].scrollHeight;
+    }
+  }
+  else {
+    display(obj);
+    $('#container')[0].scrollTop = $('#container')[0].scrollHeight;
+  }
 };
 
 // Display most recent message, ignore duplicates
 var displayLastMessage = function(obj) {
-  if ($('.content:last').text() !== obj.results[0].text) {
-    if (window.currentRoom !== "all") {
-      if (obj.results[0].roomname === window.currentRoom) {
-        display(obj.results[0]);
-        $("#container")[0].scrollTop = $("#container")[0].scrollHeight;
+  var print = false;
+  var $last = $('.content:last').text();
+  for (var i  = 4; i >= 0; i--) {
+    if ($last !== obj.results[i].text) {
+      if (!print) {
+        continue;
       }
+      roomCheckAndDisplay(obj.results[i]);
+    } else {
+      print = true;
     }
-    else {
-      display(obj.results[0]);
-      $("#container")[0].scrollTop = $("#container")[0].scrollHeight;
+  }
+  if (print === false) {
+    for (var i = 4; i>= 0; i--) {
+      roomCheckAndDisplay(obj.results[i]);
     }
   }
 };

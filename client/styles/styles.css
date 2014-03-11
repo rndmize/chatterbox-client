@@ -86,7 +86,6 @@ div.message {
     width: 460px;
     padding: 2px;
     text-align: left;
-    border: 1px dotted #A00;
 }
 
 .message span {
@@ -95,22 +94,31 @@ div.message {
 span.username {
     color: #999;
     font-size: .9em;
+    cursor: pointer;
 }
 
 span[group = me] {
-    color: cyan;
+    color: #0DE;
 }
 
 span[group = friend] {
-    color: green;
+    color: #0D3;
+}
+
+span[group = friend] + span {
+    font-weight: bold;
 }
 
 span[group = frenemy] {
-    color: purple;
+    color: #C0C;
 }
 
 span[group = SILENCE] {
     color: red;
+}
+
+span[group = SILENCE] + span {
+    color: #DDD;
 }
 
 span.content {

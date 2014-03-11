@@ -22,7 +22,7 @@ var getRooms = {
     results = Object.keys(results);
     var rooms = {}; // Message obj for display()
     rooms.text = results.join(', ');
-    rooms.username = 'SERVER -';
+    rooms.username = 'CLIENT -';
     rooms.createdAt = '';
     display(rooms);
   },
@@ -55,6 +55,45 @@ var parseCommand = function(message) {
   else if (command === 'rooms') {
     $.ajax(getRooms);
   }
+
+  // Leave room
+  else if ((command === 'exit') || (command === 'leave')) {
+    if (currentRoom === 'all') {
+      display({username: 'CLIENT -', text: 'Already in ' + window.currentRoom, createdAt: ''});
+      return;
+    }
+    joinRoom('all');
+  }
+
+  // Sends message as fixed size lines, for science
+  else if(command === 'fixed') {
+    space = args.indexOf(' ');
+    var lineSize = parseInt(args.slice(0, space));
+    var args = args.slice(space + 1);
+
+    var slicedMessage = [];
+    var sliceLine = function(text) {
+      if (text.length >= lineSize) {
+        slicedMessage.push(text.slice(0, lineSize));
+        text = text.slice(lineSize);
+        console.log(text);
+
+        sliceLine(text);
+      }
+      else {
+        if (text.length > 0) {
+          slicedMessage.push(text);
+        }
+      }
+    };
+    sliceLine(args);
+  }
+  _.each(slicedMessage, function(line) {
+    var message = {};
+    message.username = me;
+    message.text = line;
+    $.ajax(makePost(message));
+  });
 };
 
 // Filters messages to specified room only
@@ -72,5 +111,5 @@ var joinRoom = function(roomName) {
       thing.style.display = 'block';
     });
   }
-  display({username: 'SERVER -', text: 'Joined room ' + window.currentRoom, createdAt: ''});
+  display({username: 'CLIENT -', text: 'Joined room ' + window.currentRoom, createdAt: ''});
 };
