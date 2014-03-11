@@ -83,6 +83,7 @@ $.ajax(get);
 // Retrieve every 500 ms
 setInterval(function() {
   $.ajax(get);
+  $("#container")[0].scrollTop = window.innerHeight;
 
 }, 500);
 
