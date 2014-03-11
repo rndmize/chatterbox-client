@@ -1,20 +1,29 @@
 
 // Creates DOM elements and displays message
 var display = function(obj) {
-  console.log(obj);
   $('#container').append('<div class="message"></div>');
+  $('.message:last').append('<span class="date"></span>');
+  $('.date:last').text(obj.createdAt.slice(11, 16) + ' - ');
   $('.message:last').append('<span class="username"></span>');
   $('.username:last').text(obj.username);
   $('.message:last').append('<span class="content"></span>');
   $('.content:last').text(obj.text);
-  $('.message:last').append('<span class="date"></span>');
-  $('.date:last').text(obj.createdAt);
+  $('.message:last')[0].setAttribute("room", obj.roomname);
 };
 
 // Display most recent message, ignore duplicates
 var displayLastMessage = function(obj) {
   if ($('.content:last').text() !== obj.results[0].text) {
-    display(obj.results[0]);
+    if (window.currentRoom !== "all") {
+      if (obj.results[0].roomname === window.currentRoom) {
+        display(obj.results[0]);
+        $("#container")[0].scrollTop = $("#container")[0].scrollHeight;
+      }
+    }
+    else {
+      display(obj.results[0]);
+      $("#container")[0].scrollTop = $("#container")[0].scrollHeight;
+    }
   }
 };
 
@@ -59,15 +68,12 @@ var createMessage = function() {
   var message = {
     'username': document.URL.slice(document.URL.indexOf("=") + 1),
     'text': $('.wordbox').val(),
-    'roomname': '4chan'
+    'roomname': window.currentRoom
   };
   $('.wordbox').val('');
   $.ajax(makePost(message));
   console.log(message);
 };
-
-
-
 
 // Click and enter event handlers
 $('.messaginator2000').on('click', createMessage);
@@ -83,7 +89,5 @@ $.ajax(get);
 // Retrieve every 500 ms
 setInterval(function() {
   $.ajax(get);
-  $("#container")[0].scrollTop = window.innerHeight;
-
 }, 500);
 
