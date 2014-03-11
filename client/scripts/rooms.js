@@ -1,6 +1,38 @@
 // Globals
 window.currentRoom = 'all';
 
+// Ajax request for 100 messages to list recently used rooms
+var getRooms = {
+  url: 'https://api.parse.com/1/classes/chatterbox/',
+  type: 'GET',
+  contentType: 'application/json',
+  data: {
+    order: '-createdAt',
+    limit: 100
+  },
+  success: function (data) {
+    var results = {};
+    _.each(data.results, function(item) {
+      _.each(item, function(item, key) {
+        if (key === 'roomname') {
+          results[item] = true;
+        }
+      });
+    });
+    results = Object.keys(results);
+    var rooms = {}; // Message obj for display()
+    rooms.text = results.join(', ');
+    rooms.username = 'SERVER -';
+    rooms.createdAt = '';
+    display(rooms);
+  },
+  error: function (data) {
+    // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+    console.error('chatterbox: No response from server');
+  }
+};
+
+// Parses slash commands and args
 var parseCommand = function(message) {
   var space = message.text.indexOf(' ');
   var command = message.text.slice(1, space);
@@ -10,18 +42,22 @@ var parseCommand = function(message) {
   } else {
     command = message.text.slice(1);
   }
+
+  // Join room
   if (command === 'join') {
     if (args === undefined) {
       args = 'all';
     }
     joinRoom(args);
   }
+
+  // List rooms
+  else if (command === 'rooms') {
+    $.ajax(getRooms);
+  }
 };
 
-var createChatRoom = function() {
-
-};
-
+// Filters messages to specified room only
 var joinRoom = function(roomName) {
   window.currentRoom = roomName;
   if (window.currentRoom !== 'all') {
@@ -36,4 +72,5 @@ var joinRoom = function(roomName) {
       thing.style.display = 'block';
     });
   }
+  display({username: 'SERVER -', text: 'Joined room ' + window.currentRoom, createdAt: ''});
 };

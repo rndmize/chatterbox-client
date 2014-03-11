@@ -1,4 +1,11 @@
 
+// List of users object
+var people = {};
+
+var me = document.URL.slice(document.URL.indexOf("=") + 1);
+people[me] = {};
+people[me].group = "me";
+
 // Creates DOM elements and displays message
 var display = function(obj) {
   $('#container').append('<div class="message"></div>');
@@ -9,6 +16,7 @@ var display = function(obj) {
   $('.message:last').append('<span class="content"></span>');
   $('.content:last').text(obj.text);
   $('.message:last')[0].setAttribute("room", obj.roomname);
+ // $('.username:last')[0].setAttribute("group", groupCheck(obj.username));
 };
 
 // Display most recent message, ignore duplicates
@@ -56,6 +64,10 @@ var get = {
   success: function (data) {
     console.log('chatterbox: Messages retrieved');
     displayLastMessage(data);
+    if (people[data.results[0].username] === undefined) {
+      people[data.results[0].username] = {};
+      people[data.results[0].username].group = null;
+    }
   },
   error: function (data) {
     // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
