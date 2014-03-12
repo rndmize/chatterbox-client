@@ -78,7 +78,7 @@ body {
 }
 
 #container {
-    height: 600px;
+    height: 400px;
     overflow-y: scroll;
 }
 
@@ -97,7 +97,7 @@ span.username {
     cursor: pointer;
 }
 
-span[group = me] {
+span[group = local] {
     color: #0DE;
 }
 

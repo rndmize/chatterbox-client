@@ -1,4 +1,4 @@
-
+/* global $ */
 
 // Creates DOM elements and displays message
 var display = function(obj) {
@@ -13,7 +13,13 @@ var display = function(obj) {
   $('.username:last')[0].setAttribute("group", groupCheck(obj.username));
 };
 
+// Checks room before displaying, also ignores muted users
 var roomCheckAndDisplay = function(obj) {
+  if (window.people[obj.username] === undefined) {
+    window.people[obj.username] = {};
+    window.people[obj.username].group = null;
+  }
+  if (people[obj.username].muted === true) return;
   if (window.currentRoom !== 'all') {
     if (obj.roomname === window.currentRoom) {
       display(obj);
@@ -26,23 +32,27 @@ var roomCheckAndDisplay = function(obj) {
   }
 };
 
-// Display most recent message, ignore duplicates
-var displayLastMessage = function(obj) {
+// Display most recent message, ignore duplicates and undefined users/messages
+var displayLastMessage = function(list) {
   var print = false;
   var $last = $('.content:last').text();
-  for (var i  = 4; i >= 0; i--) {
-    if ($last !== obj.results[i].text) {
+  for (var i = list.length - 1; i >= 0; i--) {
+    if (list[i].username === undefined || list[i].text === undefined) {
+      list.splice(i, 1);
+      continue;
+    }
+    if ($last !== list[i].text) {
       if (!print) {
         continue;
       }
-      roomCheckAndDisplay(obj.results[i]);
+      roomCheckAndDisplay(list[i]);
     } else {
       print = true;
     }
   }
   if (print === false) {
-    for (var i = 4; i>= 0; i--) {
-      roomCheckAndDisplay(obj.results[i]);
+    for (var i = list.length - 1; i>= 0; i--) {
+      roomCheckAndDisplay(list[i]);
     }
   }
 };
@@ -54,11 +64,10 @@ var makePost = function(message) {
     type: 'POST',
     data: JSON.stringify(message),
     contentType: 'application/json',
-    success: function (data) {
+    success: function () {
       console.log('chatterbox: Message sent');
     },
-    error: function (data) {
-      // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+    error: function () {
       console.error('chatterbox: Failed to send message');
     }
   };
@@ -75,14 +84,9 @@ var get = {
   },
   success: function (data) {
     console.log('chatterbox: Messages retrieved');
-    displayLastMessage(data);
-    if (people[data.results[0].username] === undefined) {
-      people[data.results[0].username] = {};
-      people[data.results[0].username].group = null;
-    }
+    displayLastMessage(data.results);
   },
-  error: function (data) {
-    // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
+  error: function () {
     console.error('chatterbox: No response from server');
   }
 };
@@ -94,8 +98,7 @@ var createMessage = function() {
     'text': $('.wordbox').val(),
     'roomname': window.currentRoom
   };
-  $('.wordbox').val('');
-  // console.log(message);
+  $('.wordbox').val(''); // Clears input box
 
   if (message.text[0] === '/') {
     parseCommand(message);
@@ -119,5 +122,5 @@ $.ajax(get);
 // Retrieve every 500 ms
 setInterval(function() {
   $.ajax(get);
-}, 500);
+}, 1000);
 

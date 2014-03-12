@@ -1,11 +1,14 @@
+/* global $ */
+
 // List of users object
 var people = {};
 
-// Add self to list
-var me = document.URL.slice(document.URL.indexOf('=') + 1);
-people[me] = {};
-people[me].group = 'me';
+// Add local user to people object
+var local = document.URL.slice(document.URL.indexOf('=') + 1);
+people[local] = {};
+people[local].group = 'local';
 
+// Checks if a user has a group
 var groupCheck = function(user) {
   if (people[user]) {
     return people[user].group;
@@ -15,6 +18,7 @@ var groupCheck = function(user) {
   }
 };
 
+// Collects the username spans to attach attributes
 var getUsernameSpans = function(userName) {
   return $('.username').filter(function(huh, elem) {
     if ($(elem).text() === userName) {
@@ -26,16 +30,14 @@ var getUsernameSpans = function(userName) {
   });
 };
 
-$('#container').on('click', '.username', function(event) {
-  //console.log(this);
+// Sets attributes
+$('#container').on('click', '.username', function() {
   var user = $(this).text();
- //  console.log(user);
   var group = groupCheck(user);
-  $usernameSpans = getUsernameSpans(user);
+  var $usernameSpans = getUsernameSpans(user);
   if (group === null) {
     people[user].group = 'friend';
     $usernameSpans.attr('group', 'friend');
-
   }
   else if (group === 'friend') {
     people[user].group = 'frenemy';

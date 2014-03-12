@@ -27,7 +27,6 @@ var getRooms = {
     display(rooms);
   },
   error: function (data) {
-    // see: https://developer.mozilla.org/en-US/docs/Web/API/console.error
     console.error('chatterbox: No response from server');
   }
 };
@@ -65,6 +64,19 @@ var parseCommand = function(message) {
     joinRoom('all');
   }
 
+  // Mute/unmute user
+  else if (command === 'mute') {
+    if (args) {
+      if (people[args].muted) {
+        people[args].muted = false;
+        console.log(args + ' unmuted');
+      } else {
+        people[args].muted = true;
+        console.log(args + ' muted');
+      }
+    }
+  }
+
   // Sends message as fixed size lines, for science
   else if(command === 'fixed') {
     space = args.indexOf(' ');
@@ -76,7 +88,6 @@ var parseCommand = function(message) {
       if (text.length >= lineSize) {
         slicedMessage.push(text.slice(0, lineSize));
         text = text.slice(lineSize);
-        console.log(text);
 
         sliceLine(text);
       }
@@ -90,7 +101,7 @@ var parseCommand = function(message) {
   }
   _.each(slicedMessage, function(line) {
     var message = {};
-    message.username = me;
+    message.username = document.URL.slice(document.URL.indexOf('=') + 1);
     message.text = line;
     $.ajax(makePost(message));
   });
